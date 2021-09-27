@@ -7,6 +7,21 @@ var lines = require('fs')
 
 var accounts = [];
 
+function lastElemOf(arr) {
+    var finalIndex = arr.length - 1;
+    var lastElem = arr[finalIndex];
+    return lastElem;
+}
+
+function newAccount(id, holder, balance) {
+    return {
+        "id": id,
+        "holder": holder,
+        "balance": balance,
+        "transactions": []
+    };
+}
+
 lines.forEach(line => {
     var fields = line.split(",");
     type = fields[0];
@@ -15,49 +30,44 @@ lines.forEach(line => {
             id = fields[1];
             holder = fields[2];
             balance = fields[3];
-            newAccount =
-            {
-                "id": id,
-                "holder": holder,
-                "balance": balance,
-                "transactions": []
-            }
-            accounts.push(newAccount);
+            account = newAccount(id, holder, balance);
+            accounts.push(account);
             break;
         case "transaction":
             id = fields[1];
             ammount = fields[2];
-            accounts.forEach(account => {
-                if (account.id == id) {
-                    var transactions = account.transactions;
-                    var newBalance;
-                    if (transactions.length > 0) {
-                        var lastIndex = transactions.length - 1;
-                        var lastTransaction = transactions[lastIndex];
-                        previousBalance = lastTransaction[1];
-                        newBalance = +ammount + +previousBalance;
-                    } else {
-                        newBalance = +ammount + +account.balance;
-                    }
-                    newTransaction = [ammount, newBalance];
-                    account.transactions.push(newTransaction);
-                }
-            });
+            addTransaction(id, ammount);
             break;
         default:
             console.log("Error! " + type)
     }
 });
 
-var example = {
-    "id": 0
-    , "holder": "Peter Parker"
-    , "balance": 122.53
-    , "transactions": [
-        [3, 125.53],
-        [4, 129.53],
-        [7, 136.53]
-    ]
+function isEmpty(arr) {
+    if (arr.length > 0) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+
+function addTransaction(id, ammount) {
+    accounts.forEach(account => {
+        if (account.id == id) {
+            var transactions = account.transactions;
+            var previousBalance;
+            if (isEmpty(transactions)) {
+                previousBalance = account.balance;
+            } else {
+                var previousTransaction = lastElemOf(transactions);
+                previousBalance = lastElemOf(previousTransaction);
+            }
+            var newBalance = +ammount + +previousBalance;
+            newTransaction = [ammount, newBalance];
+            transactions.push(newTransaction);
+        }
+    });
 }
 
 function symbol(x) {
@@ -69,8 +79,10 @@ function symbol(x) {
 }
 
 function printAcc(accRecord) {
+
     const lineBreak = "---------------------------------\n";
     var transactions = "";
+
     accRecord.transactions.forEach(element => {
         ammount = element[0];
         sym = symbol(ammount);
@@ -81,6 +93,7 @@ function printAcc(accRecord) {
         transactions += sym + ammount + "\n";
         transactions += "Balance: " + newBalance.toFixed(2) + "\n";
     });
+
     var outString =
         lineBreak
         + "Account: " + accRecord.id + "\n"
@@ -89,6 +102,7 @@ function printAcc(accRecord) {
         + "Balance: " + accRecord.balance + "\n"
         + transactions + "\n"
         + lineBreak + "\n\n\n";
+
     return outString;
 }
 
