@@ -1,0 +1,12 @@
+new-account,0,Peter Parker,122.53
+new-account,1,Natasha Romanoff,457.92
+new-account,2,Nick Fury,283527108.52
+transaction,2,-501253.79
+transaction,0,153.42
+transaction,1,483.99
+transaction,2,1543902.56
+transaction,0,-14.53
+transaction,1,-270.84
+transaction,2,2543.92
+transaction,1,183.02
+transaction,0,-9.53
