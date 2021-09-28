@@ -78,7 +78,7 @@ function symbol(x) {
     }
 }
 
-function printAcc(accRecord) {
+function accToString(accRecord) {
 
     const lineBreak = "---------------------------------\n";
     var transactions = "";
@@ -106,7 +106,13 @@ function printAcc(accRecord) {
     return outString;
 }
 
+var strBuild = "";
+
 accounts.forEach(account => {
-    var str = printAcc(account);
-    console.log(str);
+    var str = accToString(account);
+    strBuild += str;
 });
+
+require('fs').writeFile('output.txt', strBuild, function (err) {
+    if (err) return console.log(err);
+  });
